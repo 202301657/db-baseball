@@ -3,30 +3,33 @@ import sqlite3
 
 app = Flask(__name__)
 
-def get_db():
-    conn = sqlite3.connect("db.sqlite3")
-    conn.row_factory = sqlite3.Row
-    return conn
+DB_PATH = "kbo.db"
+
+def load_games_from_db():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT date, time, team1, team2, gamecenter_url, stadium FROM games")
+    rows = cursor.fetchall()
+    conn.close()
+
+    games = []
+    for r in rows:
+        games.append({
+            "date": r[0],
+            "time": r[1],
+            "team1": r[2],
+            "team2": r[3],
+            "gamecenter_url": r[4],
+            "stadium": r[5],
+        })
+
+    return games
 
 @app.route("/")
-def schedule():
-    conn = get_db()
-    games = conn.execute("SELECT * FROM game_schedule ORDER BY id DESC").fetchall()
-    conn.close()
-    return render_template("schedule.html", games=games)
+def index():
+    games = load_games_from_db()
+    return render_template("index.html", games=games)
 
-@app.route("/review/<int:game_id>")
-def review(game_id):
-    conn = get_db()
-    game = conn.execute("SELECT * FROM game_schedule WHERE id=?", (game_id,)).fetchone()
-    batting = conn.execute("SELECT * FROM batting_stats WHERE game_id=?", (game_id,)).fetchall()
-    pitching = conn.execute("SELECT * FROM pitching_stats WHERE game_id=?", (game_id,)).fetchall()
-    conn.close()
-
-    return render_template("review.html",
-                           game=game,
-                           batting=batting,
-                           pitching=pitching)
-    
 if __name__ == "__main__":
     app.run(debug=True)

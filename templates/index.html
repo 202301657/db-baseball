@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>KBO 경기 결과</title>
+
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background:#fafafa; 
+            margin:0; 
+            padding:0; 
+        }
+
+        /* ===== 상단 헤더 ===== */
+        .header {
+            background:#001f3f;   /* 남색 */
+            color:white;
+            padding:20px 40px;
+            display:flex;
+            align-items:center;
+            gap:15px;
+        }
+
+        /* 야구공 이모지 크게 */
+        .baseball-icon {
+            font-size: 80px;
+            line-height:1;
+        }
+
+        .header-title {
+            font-size:32px;
+            font-weight:bold;
+        }
+
+        /* ===== 테이블 컨테이너 ===== */
+        .container {
+            padding:40px;
+        }
+
+        table {
+            width:100%;
+            border-collapse:collapse;
+            background:white;
+        }
+
+        th, td {
+            border:1px solid #ccc;
+            padding:12px;
+            text-align:center;
+            font-size:16px;
+        }
+
+        th {
+            background:#efefef;
+            font-weight:bold;
+        }
+
+        a {
+            text-decoration:none;
+            color:#0066cc;
+            font-weight:bold;
+        }
+
+        a:hover {
+            color:#ff6600;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 상단 헤더 -->
+    <div class="header">
+        <span class="baseball-icon">⚾</span>
+        <div class="header-title">KBO 경기 결과 조회</div>
+    </div>
+
+    <!-- 본문 -->
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th>날짜</th>
+                    <th>시간</th>
+                    <th>팀1</th>
+                    <th>팀2</th>
+                    <th>게임센터</th>
+                    <th>구장</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for g in games %}
+                <tr>
+                    <td>{{ g.date }}</td>
+                    <td>{{ g.time }}</td>
+                    <td>{{ g.team1 }}</td>
+                    <td>{{ g.team2 }}</td>
+                    <td>
+                        <a href="{{ g.gamecenter_url }}" target="_blank">
+                            리뷰
+                        </a>
+                    </td>
+                    <td>{{ g.stadium }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
