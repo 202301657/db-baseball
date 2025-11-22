@@ -83,7 +83,10 @@
                     <th>날짜</th>
                     <th>시간</th>
                     <th>팀1</th>
+                    <th>팀1 점수</th>
+                    <th>팀2 점수</th>
                     <th>팀2</th>
+                    <th>승리팀</th>
                     <th>게임센터</th>
                     <th>구장</th>
                 </tr>
@@ -95,7 +98,10 @@
                     <td>{{ g.date }}</td>
                     <td>{{ g.time }}</td>
                     <td>{{ g.team1 }}</td>
+                    <td>{{ g.score_team1 }}</td>
+                    <td>{{ g.score_team2 }}</td>
                     <td>{{ g.team2 }}</td>
+                    <td>{{ g.winner }}</td>
                     <td>
                     <a href="/review/{{ g.id }}">리뷰</a>
                     </td>

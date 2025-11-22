@@ -9,8 +9,13 @@ def load_games_from_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    cursor.execute("SELECT id, date, time, team1, team2, gamecenter_url, stadium FROM games")
+    cursor.execute("""
+    SELECT id, date, time, team1, team2, gamecenter_url, stadium,
+           score_team1, score_team2, winner
+    FROM games
+    """)
     rows = cursor.fetchall()
+
     conn.close()
 
     games = []
@@ -20,9 +25,12 @@ def load_games_from_db():
             "date": r[1],
             "time": r[2],
             "team1": r[3],
+            "score_team1": r[7],
+            "score_team2": r[8],
             "team2": r[4],
+            "winner": r[9],
             "gamecenter_url": r[5],
-            "stadium": r[6],
+            "stadium": r[6]
         })
 
     return games
