@@ -3,63 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <title>경기 리뷰</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
             background:#f6f6f6;
             padding:40px;
         }
-        h2 {
-            font-size:28px;
-            font-weight:bold;
-            margin-bottom:20px;
+
+        /* ===== 제목 ===== */
+        .title-box {
+            margin-bottom:30px;
+            background:white;
+            padding:20px 25px;
+            border-radius:10px;
+            box-shadow:0 2px 5px rgba(0,0,0,0.1);
         }
+        .title-box h2 {
+            font-size:32px;
+            font-weight:bold;
+            margin:0;
+        }
+
+        /* ===== 팀 이름 ===== */
+        .team-header {
+            font-size:24px;
+            font-weight:bold;
+            margin:20px 0 10px 0;
+        }
+
+        /* ===== 표 스타일 ===== */
         table {
             width:100%;
             border-collapse:collapse;
             background:white;
+            margin-bottom:40px;
+            border-radius:10px;
+            overflow:hidden;
+            box-shadow:0 2px 5px rgba(0,0,0,0.1);
         }
         th, td {
-            border:1px solid #ccc;
-            padding:10px;
+            border:1px solid #ddd;
+            padding:12px;
             text-align:center;
             font-size:16px;
         }
         th {
-            background:#eee;
+            background:#f0f0f0;
             font-weight:bold;
+        }
+
+        /* ===== 전체 레이아웃 ===== */
+        .section {
+            margin-top:40px;
         }
     </style>
 </head>
 <body>
 
-<h2>경기 리뷰 (Game ID: {{ game_id }})</h2>
+    <!-- ===== 경기 정보 상단 박스 ===== -->
+    <div class="title-box">
+        <h2>경기 리뷰 (Game ID: {{ game_id }})</h2>
 
-<table>
-    <thead>
-        <tr>
-            <th>선수명</th>
-            <th>타수</th>
-            <th>안타</th>
-            <th>타점</th>
-            <th>득점</th>
-            <th>타율</th>
-        </tr>
-    </thead>
+        {% if game_info %}
+        <div style="margin-top:10px; font-size:20px;">
+            <strong>{{ game_info.team1 }}</strong>
+            <span style="color:#d9534f; font-weight:bold;">{{ game_info.score_team1 }}</span>
+            &nbsp;vs&nbsp;
+            <span style="color:#0275d8; font-weight:bold;">{{ game_info.score_team2 }}</span>
+            <strong>{{ game_info.team2 }}</strong>
+            &nbsp;| 승리팀: <strong style="color:#5cb85c;">{{ game_info.winner }}</strong>
+        </div>
+        {% endif %}
+    </div>
 
-    <tbody>
-        {% for b in batters %}
-        <tr>
-            <td>{{ b.player_name }}</td>
-            <td>{{ b.at_bats }}</td>
-            <td>{{ b.hits }}</td>
-            <td>{{ b.rbi }}</td>
-            <td>{{ b.run }}</td>
-            <td>{{ b.avg }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+
+    <!-- ===== 팀1 타자 기록 ===== -->
+    <div class="section">
+        <div class="team-header">{{ game_info.team1 }} 타자 기록</div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>선수명</th>
+                    <th>타수</th>
+                    <th>안타</th>
+                    <th>타점</th>
+                    <th>득점</th>
+                    <th>타율</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for b in batters_team1 %}
+                <tr>
+                    <td>{{ b.player_name }}</td>
+                    <td>{{ b.at_bats }}</td>
+                    <td>{{ b.hits }}</td>
+                    <td>{{ b.rbi }}</td>
+                    <td>{{ b.run }}</td>
+                    <td>{{ b.avg }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+    <!-- ===== 팀2 타자 기록 ===== -->
+    <div class="section">
+        <div class="team-header">{{ game_info.team2 }} 타자 기록</div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>선수명</th>
+                    <th>타수</th>
+                    <th>안타</th>
+                    <th>타점</th>
+                    <th>득점</th>
+                    <th>타율</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for b in batters_team2 %}
+                <tr>
+                    <td>{{ b.player_name }}</td>
+                    <td>{{ b.at_bats }}</td>
+                    <td>{{ b.hits }}</td>
+                    <td>{{ b.rbi }}</td>
+                    <td>{{ b.run }}</td>
+                    <td>{{ b.avg }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
 </body>
 </html>
