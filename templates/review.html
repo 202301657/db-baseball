@@ -6,81 +6,139 @@
 
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background:#f6f6f6;
-            padding:40px;
+            font-family: "Pretendard", Arial, sans-serif;
+            background: linear-gradient(135deg, #e0eafc, #cfdef3);
+            padding: 40px;
         }
 
-        /* ===== 제목 ===== */
-        .title-box {
-            margin-bottom:30px;
-            background:white;
-            padding:20px 25px;
-            border-radius:10px;
-            box-shadow:0 2px 5px rgba(0,0,0,0.1);
+        /* ===== 공통 카드 ===== */
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+            padding: 25px 30px;
+            margin-bottom: 40px;
         }
+
+        /* ===== 상단 경기 정보 ===== */
         .title-box h2 {
-            font-size:32px;
-            font-weight:bold;
-            margin:0;
+            font-size: 34px;
+            font-weight: 900;
+            margin-bottom: 15px;
+            color: #222;
         }
 
-        /* ===== 팀 이름 ===== */
+        .score-box {
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .score {
+            font-size: 32px;
+            font-weight: 900;
+        }
+
+        .team1 { color: #d9534f; }
+        .team2 { color: #0275d8; }
+
+        .winner-badge {
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+
+        /* ===== 팀 섹션 헤더 ===== */
         .team-header {
-            font-size:24px;
-            font-weight:bold;
-            margin:20px 0 10px 0;
+            font-size: 26px;
+            font-weight: 900;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        /* ===== 표 스타일 ===== */
+        .team-bar {
+            width: 6px;
+            height: 28px;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #ff7675, #d63031);
+        }
+
+        .team-bar.blue {
+            background: linear-gradient(180deg, #74b9ff, #0984e3);
+        }
+
+        /* ===== 테이블 ===== */
         table {
-            width:100%;
-            border-collapse:collapse;
-            background:white;
-            margin-bottom:40px;
-            border-radius:10px;
-            overflow:hidden;
-            box-shadow:0 2px 5px rgba(0,0,0,0.1);
-        }
-        th, td {
-            border:1px solid #ddd;
-            padding:12px;
-            text-align:center;
-            font-size:16px;
-        }
-        th {
-            background:#f0f0f0;
-            font-weight:bold;
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 14px;
         }
 
-        /* ===== 전체 레이아웃 ===== */
-        .section {
-            margin-top:40px;
+        th {
+            background: #1e272e;
+            color: white;
+            padding: 14px;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #eee;
+            font-size: 15px;
+        }
+
+        tr:nth-child(even) {
+            background: #f9fbfc;
+        }
+
+        tr:hover {
+            background: #eaf4ff;
+            transition: 0.2s;
+        }
+
+        .numeric {
+            font-weight: 700;
+            color: #333;
         }
     </style>
 </head>
 <body>
 
-    <!-- ===== 경기 정보 상단 박스 ===== -->
-    <div class="title-box">
-        <h2>경기 리뷰 (Game ID: {{ game_id }})</h2>
+    <!-- ===== 경기 정보 ===== -->
+    <div class="card title-box">
+        <h2>⚾ 경기 리뷰 (Game ID: {{ game_id }})</h2>
 
         {% if game_info %}
-        <div style="margin-top:10px; font-size:20px;">
+        <div class="score-box">
             <strong>{{ game_info.team1 }}</strong>
-            <span style="color:#d9534f; font-weight:bold;">{{ game_info.score_team1 }}</span>
-            &nbsp;vs&nbsp;
-            <span style="color:#0275d8; font-weight:bold;">{{ game_info.score_team2 }}</span>
+            <span class="score team1">{{ game_info.score_team1 }}</span>
+
+            <span>VS</span>
+
+            <span class="score team2">{{ game_info.score_team2 }}</span>
             <strong>{{ game_info.team2 }}</strong>
-            &nbsp;| 승리팀: <strong style="color:#5cb85c;">{{ game_info.winner }}</strong>
+
+            <span class="winner-badge">🏆 {{ game_info.winner }}</span>
         </div>
         {% endif %}
     </div>
 
-
-    <!-- ===== 팀1 타자 기록 ===== -->
-    <div class="section">
-        <div class="team-header">{{ game_info.team1 }} 타자 기록</div>
+    <!-- ===== 팀1 타자 ===== -->
+    <div class="card">
+        <div class="team-header">
+            <div class="team-bar"></div>
+            {{ game_info.team1 }} 타자 기록
+        </div>
 
         <table>
             <thead>
@@ -93,26 +151,27 @@
                     <th>타율</th>
                 </tr>
             </thead>
-
             <tbody>
                 {% for b in batters_team1 %}
                 <tr>
                     <td>{{ b.player_name }}</td>
-                    <td>{{ b.at_bats }}</td>
-                    <td>{{ b.hits }}</td>
-                    <td>{{ b.rbi }}</td>
-                    <td>{{ b.run }}</td>
-                    <td>{{ b.avg }}</td>
+                    <td class="numeric">{{ b.at_bats }}</td>
+                    <td class="numeric">{{ b.hits }}</td>
+                    <td class="numeric">{{ b.rbi }}</td>
+                    <td class="numeric">{{ b.run }}</td>
+                    <td class="numeric">{{ b.avg }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 
-
-    <!-- ===== 팀2 타자 기록 ===== -->
-    <div class="section">
-        <div class="team-header">{{ game_info.team2 }} 타자 기록</div>
+    <!-- ===== 팀2 타자 ===== -->
+    <div class="card">
+        <div class="team-header">
+            <div class="team-bar blue"></div>
+            {{ game_info.team2 }} 타자 기록
+        </div>
 
         <table>
             <thead>
@@ -125,16 +184,15 @@
                     <th>타율</th>
                 </tr>
             </thead>
-
             <tbody>
                 {% for b in batters_team2 %}
                 <tr>
                     <td>{{ b.player_name }}</td>
-                    <td>{{ b.at_bats }}</td>
-                    <td>{{ b.hits }}</td>
-                    <td>{{ b.rbi }}</td>
-                    <td>{{ b.run }}</td>
-                    <td>{{ b.avg }}</td>
+                    <td class="numeric">{{ b.at_bats }}</td>
+                    <td class="numeric">{{ b.hits }}</td>
+                    <td class="numeric">{{ b.rbi }}</td>
+                    <td class="numeric">{{ b.run }}</td>
+                    <td class="numeric">{{ b.avg }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

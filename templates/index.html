@@ -6,64 +6,196 @@
 
     <style>
         body { 
-            font-family: Arial, sans-serif; 
-            background:#fafafa; 
+            font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Arial, sans-serif; 
+            background: linear-gradient(135deg, #e0eafc, #f9f9fb);
             margin:0; 
             padding:0; 
         }
 
         /* ===== 상단 헤더 ===== */
         .header {
-            background:#001f3f;   /* 남색 */
+            background: radial-gradient(circle at 10% 20%, #001f3f 0, #001328 60%, #000814 100%);
             color:white;
-            padding:20px 40px;
+            padding:22px 48px;
             display:flex;
             align-items:center;
-            gap:15px;
+            gap:20px;
+            box-shadow:0 4px 16px rgba(0,0,0,0.25);
         }
 
-        /* 야구공 이모지 크게 */
         .baseball-icon {
-            font-size: 80px;
+            font-size: 70px;
             line-height:1;
+            filter: drop-shadow(0 0 6px rgba(255,255,255,0.4));
+        }
+
+        .header-text-area {
+            display:flex;
+            flex-direction:column;
+            gap:6px;
         }
 
         .header-title {
             font-size:32px;
-            font-weight:bold;
+            font-weight:900;
         }
 
-        /* ===== 테이블 컨테이너 ===== */
+        .header-subtitle {
+            font-size:15px;
+            color:#d0d8ff;
+        }
+
+        /* ===== 메인 컨테이너 ===== */
         .container {
-            padding:40px;
+            padding:36px 48px 48px;
+            max-width:1200px;
+            margin:0 auto;
+        }
+
+        .table-card {
+            background:white;
+            border-radius:18px;
+            box-shadow:0 8px 24px rgba(0,0,0,0.08);
+            padding:24px 26px 30px;
+        }
+
+        .table-title {
+            font-size:20px;
+            font-weight:800;
+            margin-bottom:14px;
+            display:flex;
+            align-items:center;
+            gap:8px;
+            color:#222;
+        }
+
+        .table-title-pill {
+            font-size:12px;
+            padding:3px 10px;
+            border-radius:999px;
+            background:#001f3f;
+            color:#f5f8ff;
+            text-transform:uppercase;
+            letter-spacing:0.08em;
+        }
+
+        .table-desc {
+            font-size:14px;
+            color:#666;
+            margin-bottom:18px;
+        }
+
+        /* ===== 테이블 ===== */
+        .table-wrapper {
+            overflow-x:auto;
+            border-radius:14px;
         }
 
         table {
             width:100%;
             border-collapse:collapse;
             background:white;
+            min-width:800px;
+        }
+
+        thead tr {
+            background:#001f3f;
+            color:white;
         }
 
         th, td {
-            border:1px solid #ccc;
-            padding:12px;
+            padding:12px 10px;
             text-align:center;
-            font-size:16px;
+            font-size:14px;
+            white-space:nowrap;
         }
 
         th {
-            background:#efefef;
-            font-weight:bold;
+            font-weight:700;
+            letter-spacing:0.03em;
+            border-bottom:1px solid rgba(255,255,255,0.12);
         }
 
+        tbody tr {
+            border-bottom:1px solid #edf0f4;
+        }
+
+        tbody tr:nth-child(even) {
+            background:#f8fafc;
+        }
+
+        tbody tr:hover {
+            background:#eaf4ff;
+            transition:0.15s ease-in-out;
+        }
+
+        td {
+            color:#333;
+        }
+
+        .col-date {
+            font-weight:700;
+        }
+
+        .col-time {
+            font-size:13px;
+            color:#555;
+        }
+
+        .team-name {
+            font-weight:700;
+        }
+
+        .score {
+            font-weight:800;
+        }
+
+        .winner-badge {
+            display:inline-block;
+            padding:4px 10px;
+            border-radius:999px;
+            background:linear-gradient(135deg, #2ecc71, #27ae60);
+            color:white;
+            font-size:12px;
+            font-weight:700;
+        }
+
+        /* ===== 링크 ===== */
         a {
             text-decoration:none;
-            color:#0066cc;
-            font-weight:bold;
+            color:#0056d6;
+            font-weight:700;
+            font-size:13px;
+            padding:5px 10px;
+            border-radius:999px;
+            border:1px solid rgba(0,86,214,0.35);
+            background:rgba(0,86,214,0.03);
         }
 
         a:hover {
-            color:#ff6600;
+            color:#ffffff;
+            background:#ff7a1a;
+            border-color:#ff7a1a;
+            box-shadow:0 0 8px rgba(255,122,26,0.5);
+        }
+
+        /* 반응형 약간만 */
+        @media (max-width: 768px) {
+            .header {
+                padding:18px 18px;
+            }
+
+            .container {
+                padding:24px 18px 32px;
+            }
+
+            .header-title {
+                font-size:24px;
+            }
+
+            .baseball-icon {
+                font-size:56px;
+            }
         }
     </style>
 </head>
@@ -72,44 +204,63 @@
     <!-- 상단 헤더 -->
     <div class="header">
         <span class="baseball-icon">⚾</span>
-        <div class="header-title">KBO 10월 야구 경기 결과 조회</div>
+        <div class="header-text-area">
+            <div class="header-title">KBO 10월 야구 경기 결과 조회</div>
+            <div class="header-subtitle">10월에 열린 주요 경기들을 한눈에 확인하고, 각 경기의 리뷰 페이지로 바로 이동해보세요.</div>
+        </div>
     </div>
 
     <!-- 본문 -->
     <div class="container">
-        <table>
-            <thead>
-                <tr>
-                    <th>날짜</th>
-                    <th>시간</th>
-                    <th>팀1</th>
-                    <th>팀1 점수</th>
-                    <th>팀2 점수</th>
-                    <th>팀2</th>
-                    <th>승리팀</th>
-                    <th>게임센터</th>
-                    <th>구장</th>
-                </tr>
-            </thead>
+        <div class="table-card">
+            <div class="table-title">
+                10월 경기 리스트
+                <span class="table-title-pill">Regular Season</span>
+            </div>
+            <div class="table-desc">
+                날짜·시간·점수·구장 정보를 포함한 10월 경기 결과입니다.  
+                각 경기의 <strong>리뷰</strong> 링크를 클릭하면 상세 박스스코어 페이지로 이동합니다.
+            </div>
 
-            <tbody>
-                {% for g in games %}
-                <tr>
-                    <td>{{ g.date }}</td>
-                    <td>{{ g.time }}</td>
-                    <td>{{ g.team1 }}</td>
-                    <td>{{ g.score_team1 }}</td>
-                    <td>{{ g.score_team2 }}</td>
-                    <td>{{ g.team2 }}</td>
-                    <td>{{ g.winner }}</td>
-                    <td>
-                    <a href="/review/{{ g.id }}">리뷰</a>
-                    </td>
-                    <td>{{ g.stadium }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>날짜</th>
+                            <th>시간</th>
+                            <th>팀1</th>
+                            <th>팀1 점수</th>
+                            <th>팀2 점수</th>
+                            <th>팀2</th>
+                            <th>승리팀</th>
+                            <th>게임센터</th>
+                            <th>구장</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for g in games %}
+                        <tr>
+                            <td class="col-date">{{ g.date }}</td>
+                            <td class="col-time">{{ g.time }}</td>
+                            <td class="team-name">{{ g.team1 }}</td>
+                            <td class="score">{{ g.score_team1 }}</td>
+                            <td class="score">{{ g.score_team2 }}</td>
+                            <td class="team-name">{{ g.team2 }}</td>
+                            <td>
+                                <span class="winner-badge">{{ g.winner }}</span>
+                            </td>
+                            <td>
+                                <a href="/review/{{ g.id }}">리뷰</a>
+                            </td>
+                            <td>{{ g.stadium }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
     </div>
 
 </body>
