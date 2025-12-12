@@ -19,7 +19,8 @@ def load_games_from_db(search=""):
             WHERE team1 LIKE ?
                OR team2 LIKE ?
                OR date LIKE ?
-        """, (f"%{search}%", f"%{search}%", f"%{search}%"))
+               OR stadium LIKE ?
+        """, (f"%{search}%", f"%{search}%", f"%{search}%", f"%{search}%"))
     else:
         cursor.execute("""
             SELECT id, date, time, team1, team2, gamecenter_url, stadium,
