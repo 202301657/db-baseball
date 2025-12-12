@@ -2,8 +2,7 @@
 
 KBO 공식 사이트  
 ▶ https://www.koreabaseball.com/schedule/schedule.aspx  
-에서 경기 일정, **게임센터 상세 성적(타자 박스 스코어)**를 크롤링하여  
-SQLite 데이터베이스에 저장하고, Flask 웹앱으로 조회할 수 있는 프로젝트입니다.
+에서 경기 일정, 게임센터 상세 성적(타자 박스 스코어)를 참고하여 SQLite 데이터베이스에 저장하고, Flask 웹앱으로 조회할 수 있는 프로젝트입니다.
 
 ---
 
