@@ -56,7 +56,7 @@ def index():
     return render_template("index.html", games=games, search=search)
 
 
-# ✅ 리뷰 페이지 (타자 기록 출력)
+# ✅ 리뷰 페이지
 @app.route("/review/<int:game_id>")
 def review_page(game_id):
     conn = sqlite3.connect(DB_PATH)
@@ -65,7 +65,8 @@ def review_page(game_id):
     # ✅ 경기 정보
     cursor.execute("""
         SELECT team1, team2, score_team1, score_team2, winner
-        FROM games WHERE id = ?
+        FROM games
+        WHERE id = ?
     """, (game_id,))
     row = cursor.fetchone()
 
@@ -73,12 +74,46 @@ def review_page(game_id):
         conn.close()
         return "해당 경기 데이터가 없습니다."
 
+    team1_name = row[0]
+    team2_name = row[1]
+
     game_info = {
-        "team1": row[0],
-        "team2": row[1],
+        "team1": team1_name,
+        "team2": team2_name,
         "score_team1": row[2],
         "score_team2": row[3],
         "winner": row[4]
+    }
+
+    # ✅ 팀 기록 (team_stats 테이블에서 직접 로드)
+    cursor.execute("""
+        SELECT team, hits, home_runs, avg, strikeouts,
+               stolen_bases, errors, double_plays,
+               left_on_base, walks
+        FROM team_stats
+        WHERE game_id = ?
+    """, (game_id,))
+
+    rows = cursor.fetchall()
+
+    team_stats = {}
+    for r in rows:
+        team_stats[r[0]] = {
+            "hits": r[1],
+            "home_runs": r[2],
+            "avg": r[3],
+            "strikeouts": r[4],
+            "stolen_bases": r[5],
+            "errors": r[6],
+            "double_plays": r[7],
+            "left_on_base": r[8],
+            "walks": r[9]
+        }
+
+    # review.html에서 team_stats.team1 / team_stats.team2 형태로 쓰기 위함
+    team_stats = {
+        "team1": team_stats.get(team1_name, {}),
+        "team2": team_stats.get(team2_name, {})
     }
 
     # ✅ 팀1 타자 기록
@@ -87,20 +122,19 @@ def review_page(game_id):
         FROM batting
         WHERE game_id = ? AND team = ?
         ORDER BY id ASC
-    """, (game_id, row[0]))
+    """, (game_id, team1_name))
 
-    rows_team1 = cursor.fetchall()
-
-    batters_team1 = []
-    for r in rows_team1:
-        batters_team1.append({
+    batters_team1 = [
+        {
             "player_name": r[0],
             "at_bats": r[1],
             "hits": r[2],
             "rbi": r[3],
             "run": r[4],
             "avg": r[5]
-        })
+        }
+        for r in cursor.fetchall()
+    ]
 
     # ✅ 팀2 타자 기록
     cursor.execute("""
@@ -108,20 +142,19 @@ def review_page(game_id):
         FROM batting
         WHERE game_id = ? AND team = ?
         ORDER BY id ASC
-    """, (game_id, row[1]))
+    """, (game_id, team2_name))
 
-    rows_team2 = cursor.fetchall()
-
-    batters_team2 = []
-    for r in rows_team2:
-        batters_team2.append({
+    batters_team2 = [
+        {
             "player_name": r[0],
             "at_bats": r[1],
             "hits": r[2],
             "rbi": r[3],
             "run": r[4],
             "avg": r[5]
-        })
+        }
+        for r in cursor.fetchall()
+    ]
 
     conn.close()
 
@@ -129,6 +162,7 @@ def review_page(game_id):
         "review.html",
         game_id=game_id,
         game_info=game_info,
+        team_stats=team_stats,
         batters_team1=batters_team1,
         batters_team2=batters_team2
     )

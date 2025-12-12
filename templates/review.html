@@ -54,6 +54,66 @@
             margin-left: 10px;
         }
 
+        /* ===== 팀 기록 (중앙 기준 비교) ===== */
+        .team-stats-row {
+            display: grid;
+            grid-template-columns: 1fr 80px 1fr;
+            align-items: center;
+            margin: 18px 0;
+        }
+
+        .stat-left,
+        .stat-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stat-left {
+            justify-content: flex-end;
+        }
+
+        .stat-right {
+            justify-content: flex-start;
+        }
+
+        .stat-label {
+            text-align: center;
+            font-size: 15px;
+            font-weight: 700;
+            color: #666;
+        }
+
+        .value {
+            min-width: 32px;
+            text-align: center;
+            font-weight: 800;
+            color: #222;
+        }
+
+        .bar {
+            width: 160px;
+            height: 8px;
+            background: #eee;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .bar span {
+            display: block;
+            height: 100%;
+            border-radius: 6px;
+        }
+
+        .bar.left span {
+            background: linear-gradient(90deg, #ff7675, #d63031);
+            margin-left: auto; /* 중앙 기준 왼쪽 확장 */
+        }
+
+        .bar.right span {
+            background: linear-gradient(90deg, #74b9ff, #0984e3);
+        }
+
         /* ===== 팀 섹션 헤더 ===== */
         .team-header {
             font-size: 26px;
@@ -88,7 +148,6 @@
             color: white;
             padding: 14px;
             font-size: 16px;
-            letter-spacing: 0.5px;
         }
 
         td {
@@ -103,7 +162,6 @@
 
         tr:hover {
             background: #eaf4ff;
-            transition: 0.2s;
         }
 
         .numeric {
@@ -122,15 +180,52 @@
         <div class="score-box">
             <strong>{{ game_info.team1 }}</strong>
             <span class="score team1">{{ game_info.score_team1 }}</span>
-
             <span>VS</span>
-
             <span class="score team2">{{ game_info.score_team2 }}</span>
             <strong>{{ game_info.team2 }}</strong>
-
             <span class="winner-badge">🏆 {{ game_info.winner }}</span>
         </div>
         {% endif %}
+    </div>
+
+    <!-- ===== 팀 기록 ===== -->
+    <div class="card">
+        <div class="team-header">팀 기록</div>
+
+        {% set t1 = team_stats.team1 %}
+        {% set t2 = team_stats.team2 %}
+
+        {% for label, v1, v2 in [
+            ("안타", t1.hits, t2.hits),
+            ("홈런", t1.home_runs, t2.home_runs),
+            ("타율", t1.avg, t2.avg),
+            ("탈삼진", t1.strikeouts, t2.strikeouts),
+            ("도루", t1.stolen_bases, t2.stolen_bases),
+            ("실책", t1.errors, t2.errors),
+            ("병살", t1.double_plays, t2.double_plays),
+            ("잔루", t1.left_on_base, t2.left_on_base),
+            ("사사구", t1.walks, t2.walks)
+        ] %}
+        {% set maxv = v1 if v1 > v2 else v2 %}
+
+        <div class="team-stats-row">
+            <div class="stat-left">
+                <span class="value">{{ v1 }}</span>
+                <div class="bar left">
+                    <span style="width: {{ (v1 / maxv * 100) if maxv else 0 }}%"></span>
+                </div>
+            </div>
+
+            <div class="stat-label">{{ label }}</div>
+
+            <div class="stat-right">
+                <div class="bar right">
+                    <span style="width: {{ (v2 / maxv * 100) if maxv else 0 }}%"></span>
+                </div>
+                <span class="value">{{ v2 }}</span>
+            </div>
+        </div>
+        {% endfor %}
     </div>
 
     <!-- ===== 팀1 타자 ===== -->
