@@ -54,25 +54,27 @@
             margin-left: 10px;
         }
 
-        /* ===== 팀 기록 (중앙 기준 비교) ===== */
+        /* ===== 팀 기록 ===== */
         .team-stats-row {
             display: grid;
-            grid-template-columns: 1fr 80px 1fr;
+            grid-template-columns: 1fr 90px 1fr;
             align-items: center;
-            margin: 18px 0;
+            margin: 22px 0;
         }
 
         .stat-left,
         .stat-right {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 14px;
         }
 
+        /* 왼쪽: 값 → 바 (중앙 기준) */
         .stat-left {
             justify-content: flex-end;
         }
 
+        /* 오른쪽: 바 → 값 */
         .stat-right {
             justify-content: flex-start;
         }
@@ -80,34 +82,35 @@
         .stat-label {
             text-align: center;
             font-size: 15px;
-            font-weight: 700;
+            font-weight: 800;
             color: #666;
         }
 
         .value {
-            min-width: 32px;
+            min-width: 36px;
             text-align: center;
             font-weight: 800;
             color: #222;
         }
 
+        /* ===== 바 (길게!) ===== */
         .bar {
-            width: 160px;
-            height: 8px;
-            background: #eee;
-            border-radius: 6px;
-            overflow: hidden;
+            width: 360px;      /* ← 핵심 */
+            height: 12px;
+            background: #ececec;
+            border-radius: 999px;
         }
 
         .bar span {
             display: block;
             height: 100%;
-            border-radius: 6px;
+            border-radius: 999px;
         }
 
+        /* 중앙 기준으로 퍼지게 */
         .bar.left span {
             background: linear-gradient(90deg, #ff7675, #d63031);
-            margin-left: auto; /* 중앙 기준 왼쪽 확장 */
+            margin-left: auto;     /* 왼쪽으로 채움 */
         }
 
         .bar.right span {
@@ -189,6 +192,18 @@
     </div>
 
     <!-- ===== 팀 기록 ===== -->
+    {% set stat_max = {
+        "안타": 15,
+        "홈런": 4,
+        "타율": 0.4,
+        "탈삼진": 15,
+        "도루": 5,
+        "실책": 5,
+        "병살": 5,
+        "잔루": 15,
+        "사사구": 10
+    } %}
+
     <div class="card">
         <div class="team-header">팀 기록</div>
 
@@ -206,9 +221,10 @@
             ("잔루", t1.left_on_base, t2.left_on_base),
             ("사사구", t1.walks, t2.walks)
         ] %}
-        {% set maxv = v1 if v1 > v2 else v2 %}
+        {% set maxv = stat_max[label] %}
 
         <div class="team-stats-row">
+            <!-- 왼쪽 팀 -->
             <div class="stat-left">
                 <span class="value">{{ v1 }}</span>
                 <div class="bar left">
@@ -216,8 +232,10 @@
                 </div>
             </div>
 
+            <!-- 지표 -->
             <div class="stat-label">{{ label }}</div>
 
+            <!-- 오른쪽 팀 -->
             <div class="stat-right">
                 <div class="bar right">
                     <span style="width: {{ (v2 / maxv * 100) if maxv else 0 }}%"></span>
