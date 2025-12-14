@@ -19,6 +19,9 @@ KBO 공식 사이트
 아래 사진을 클릭하시면 영상을 다운로드 받으실 수 있습니다. 
 [![시연 영상](database_img.png)](데이터베이스_과제_시연영상_염보은.mp4)
 
+## 참고 자료
+https://www.notion.so/2b14a4fafdfe80188aece49729f8c6bc?source=copy_link
+
 ---
 
 ## 아키텍처 개요
