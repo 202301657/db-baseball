@@ -6,7 +6,7 @@ app = Flask(__name__)
 DB_PATH = "kbo.db"
 
 
-# ✅ 경기 리스트 로드 (검색 포함)
+# 경기 리스트 로드 (검색 포함)
 def load_games_from_db(search=""):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -49,7 +49,7 @@ def load_games_from_db(search=""):
     return games
 
 
-# ✅ 메인 페이지 (경기 리스트 + 검색)
+# 메인 페이지 (경기 리스트 + 검색)
 @app.route("/")
 def index():
     search = request.args.get("search", "").strip()
@@ -57,13 +57,13 @@ def index():
     return render_template("index.html", games=games, search=search)
 
 
-# ✅ 리뷰 페이지
+# 리뷰 페이지
 @app.route("/review/<int:game_id>")
 def review_page(game_id):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    # ✅ 경기 정보
+    # 경기 정보
     cursor.execute("""
         SELECT team1, team2, score_team1, score_team2, winner
         FROM games
@@ -86,7 +86,7 @@ def review_page(game_id):
         "winner": row[4]
     }
 
-    # ✅ 팀 기록 (team_stats 테이블에서 직접 로드)
+    # 팀 기록 (team_stats 테이블에서 직접 로드)
     cursor.execute("""
         SELECT team, hits, home_runs, avg, strikeouts,
                stolen_bases, errors, double_plays,
@@ -117,7 +117,7 @@ def review_page(game_id):
         "team2": team_stats.get(team2_name, {})
     }
 
-    # ✅ 팀1 타자 기록
+    # 팀1 타자 기록
     cursor.execute("""
         SELECT player_name, at_bats, hits, rbi, run, avg
         FROM batting
@@ -137,7 +137,7 @@ def review_page(game_id):
         for r in cursor.fetchall()
     ]
 
-    # ✅ 팀2 타자 기록
+    # 팀2 타자 기록
     cursor.execute("""
         SELECT player_name, at_bats, hits, rbi, run, avg
         FROM batting
@@ -169,6 +169,6 @@ def review_page(game_id):
     )
 
 
-# ✅ 서버 실행
+# 서버 실행
 if __name__ == "__main__":
     app.run(debug=True)
